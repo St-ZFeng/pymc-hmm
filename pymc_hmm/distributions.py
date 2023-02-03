@@ -1,21 +1,21 @@
 import warnings
 
 import numpy as np
-import pymc3 as pm
-import theano
-import theano.tensor as tt
-from pymc3.distributions.distribution import (
+import pymc as pm
+import pytensor
+import pytensor.tensor as tt
+from pymc.distributions.distribution import (
     Distribution,
     _DrawValuesContext,
     draw_values,
     generate_samples,
 )
-from pymc3.distributions.mixture import _conversion_map, all_discrete
-from theano.graph.op import get_test_value
-from theano.scalar import upcast
-from theano.tensor.extra_ops import broadcast_to as tt_broadcast_to
+from pymc.distributions.mixture import _conversion_map, all_discrete
+from pytensor.graph.op import get_test_value
+from pytensor.scalar import upcast
+from pytensor.tensor.extra_ops import broadcast_to as tt_broadcast_to
 
-from pymc3_hmm.utils import tt_broadcast_arrays, vsearchsorted
+from pymc_hmm.utils import tt_broadcast_arrays, vsearchsorted
 
 
 def distribution_subset_args(dist, shape, idx):
@@ -70,7 +70,7 @@ def get_and_check_comp_value(x):
         return x.random()
     else:
         raise TypeError(
-            "Component distributions must be PyMC3 Distributions. "
+            "Component distributions must be pymc Distributions. "
             "Got {}".format(type(x))
         )
 
@@ -87,7 +87,7 @@ class SwitchingProcess(Distribution):
 
         Each `Distribution` object in `comp_dists` must have a
         `Distribution.random_subset` method that takes a list of indices and
-        returns a sample for only that subset.  Unfortunately, since PyMC3
+        returns a sample for only that subset.  Unfortunately, since pymc
         doesn't provide such a method, you'll have to implement it yourself and
         monkey patch a `Distribution` class.
 
@@ -150,7 +150,7 @@ class SwitchingProcess(Distribution):
         super().__init__(shape=shape, dtype=dtype, defaults=defaults, **kwargs)
 
     def logp(self, obs):
-        """Return the Theano log-likelihood at a point."""
+        """Return the pytensor log-likelihood at a point."""
 
         obs_tt = tt.as_tensor_variable(obs)
 
@@ -291,13 +291,13 @@ class DiscreteMarkovChain(pm.Discrete):
 
         shape = np.atleast_1d(shape)
 
-        dtype = _conversion_map[theano.config.floatX]
+        dtype = _conversion_map[pytensor.config.floatX]
         self.mode = np.zeros(tuple(shape), dtype=dtype)
 
         super().__init__(shape=shape, **kwargs)
 
     def logp(self, states):
-        r"""Create a Theano graph that computes the log-likelihood for a discrete Markov chain.
+        r"""Create a pytensor graph that computes the log-likelihood for a discrete Markov chain.
 
         This is the log-likelihood for the joint distribution of states, :math:`S_t`, conditional
         on state samples, :math:`s_t`, given by the following:
@@ -331,7 +331,7 @@ class DiscreteMarkovChain(pm.Discrete):
         # def S_logp_fn(S_tm1, S_t, Gamma):
         #     return tt.log(Gamma[..., S_tm1, S_t])
         #
-        # P_S_2T_tt, _ = theano.scan(
+        # P_S_2T_tt, _ = pytensor.scan(
         #     S_logp_fn,
         #     sequences=[
         #         {
@@ -465,7 +465,7 @@ class HorseShoe(pm.Normal):
     def logp(self, values):
         """
         XXX: This is only a placeholder for the log-probability.
-        It is required to get past PyMC3 design restrictions.
+        It is required to get past pymc design restrictions.
         Do not use this distribution without the `HSStep` sampler!
 
         """

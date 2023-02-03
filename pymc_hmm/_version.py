@@ -41,8 +41,8 @@ def get_config():
     cfg.VCS = "git"
     cfg.style = "pep440"
     cfg.tag_prefix = "v"
-    cfg.parentdir_prefix = "pymc3_hmm-"
-    cfg.versionfile_source = "pymc3_hmm/_version.py"
+    cfg.parentdir_prefix = "pymc_hmm-"
+    cfg.versionfile_source = "pymc_hmm/_version.py"
     cfg.verbose = False
     return cfg
 

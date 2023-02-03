@@ -3,29 +3,29 @@ from itertools import chain
 from typing import Callable, Tuple
 
 import numpy as np
-import pymc3 as pm
+import pymc as pm
 import scipy
-import theano.scalar as ts
-import theano.tensor as tt
-from pymc3.distributions.distribution import draw_values
-from pymc3.step_methods.arraystep import ArrayStep, BlockedStep, Competence
-from pymc3.util import get_untransformed_name
+import pytensor.scalar as ts
+import pytensor.tensor as tt
+from pymc.distributions.distribution import draw_values
+from pymc.step_methods.arraystep import ArrayStep, BlockedStep, Competence
+from pymc.util import get_untransformed_name
 from scipy.stats import invgamma
-from theano import config
-from theano.compile import optdb
-from theano.graph.basic import Variable, graph_inputs
-from theano.graph.fg import FunctionGraph
-from theano.graph.op import get_test_value as test_value
-from theano.graph.opt import OpRemove, pre_greedy_local_optimizer
-from theano.graph.optdb import Query
-from theano.sparse.basic import StructuredDot
-from theano.tensor.basic import Dot
-from theano.tensor.elemwise import DimShuffle, Elemwise
-from theano.tensor.subtensor import AdvancedIncSubtensor1
-from theano.tensor.var import TensorConstant
+from pytensor import config
+from pytensor.compile import optdb
+from pytensor.graph.basic import Variable, graph_inputs
+from pytensor.graph.fg import FunctionGraph
+from pytensor.graph.op import get_test_value as test_value
+from pytensor.graph.opt import OpRemove, pre_greedy_local_optimizer
+from pytensor.graph.optdb import Query
+from pytensor.sparse.basic import StructuredDot
+from pytensor.tensor.basic import Dot
+from pytensor.tensor.elemwise import DimShuffle, Elemwise
+from pytensor.tensor.subtensor import AdvancedIncSubtensor1
+from pytensor.tensor.var import TensorConstant
 
-from pymc3_hmm.distributions import DiscreteMarkovChain, HorseShoe, SwitchingProcess
-from pymc3_hmm.utils import compute_trans_freqs
+from pymc_hmm.distributions import DiscreteMarkovChain, HorseShoe, SwitchingProcess
+from pymc_hmm.utils import compute_trans_freqs
 
 big: float = 1e20
 small: float = 1.0 / big
@@ -234,7 +234,7 @@ class TransMatConjugateStep(ArrayStep):
     on :math:`S_{1:T}`.
 
     Dirichlet priors can also be embedded in larger transition matrices through
-    `theano.tensor.set_subtensor` `Op`s.  See
+    `pytensor.tensor.set_subtensor` `Op`s.  See
     `TransMatConjugateStep._set_row_mappings`.
 
     """  # noqa: E501
